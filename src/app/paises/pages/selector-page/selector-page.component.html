@@ -3,18 +3,44 @@
 
 <form [formGroup]="miFormulario" autocomplete="off" (ngSubmit)="guardar()">
 
+  <!-- Region -->
   <div class="row mb-3">
     <div class="col">
       <label class="form-label">Continente:</label>
       <select class="form-control"
               formControlName="region">
         <option value=""> -- Seleccione Continente -- </option>
+        <option *ngFor="let region of regiones"
+                [value]="region | lowercase"> {{ region }} </option>
       </select>
     </div>
   </div>
 
+  <!-- Paises -->
+  <div class="row mb-3">
+    <div class="col">
+      <label class="form-label">Pais:</label>
+      <select class="form-control"
+              formControlName="pais">
+        <option value=""> -- Seleccione Pais -- </option>
+        <option *ngFor="let pais of paises"
+                [value]="pais.alpha3Code"> {{ pais.name }} </option>
+      </select>
+    </div>
+  </div>
 
-
+    <!-- Fronteras -->
+    <div class="row mb-3">
+      <div class="col">
+        <label class="form-label">Fronteras:</label>
+        <select class="form-control"
+                formControlName="frontera">
+          <option value=""> -- Seleccione el pais fronterizo -- </option>
+          <option *ngFor="let frontera of fronteras"
+                  [value]="frontera"> {{ frontera }} </option>
+        </select>
+      </div>
+    </div>
 
 <div class="row">
   <div class="col">
