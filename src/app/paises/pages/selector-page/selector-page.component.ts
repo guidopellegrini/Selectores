@@ -20,7 +20,9 @@ export class SelectorPageComponent implements OnInit {
   //llenar selectores
   regiones: string[] = [];
   paises: PaisSmall[] = [];
-  fronteras: string[] = [];
+  fronteras: PaisSmall[] = [];
+
+  cargando: boolean = false;
 
   constructor( private fb: FormBuilder,
                private paisesService: PaisesService) { }
@@ -33,14 +35,17 @@ export class SelectorPageComponent implements OnInit {
       .pipe(
 
         tap( (_) => {
-            this.miFormulario.get('pais')?.reset('');
+          this.miFormulario.get('pais')?.reset('');
+          this.paises = [];
+          this.cargando = true;
         }),
 
         switchMap( region => this.paisesService.getPaisesPorRegion(region) )
       )
 
       .subscribe( paises => { 
-        this.paises = paises
+        this.paises = paises || []
+        this.cargando = false;
       })
 
       // cuando cambie el pais
@@ -48,19 +53,25 @@ export class SelectorPageComponent implements OnInit {
       .pipe(
 
         tap( (_) => {
-            this.miFormulario.get('frontera')?.reset('');
+          this.miFormulario.get('frontera')?.reset('');
+          this.fronteras = [];
+          this.cargando = true;
         }),
 
-        switchMap( paisAlpha => this.paisesService.getPaisPorCodigo(paisAlpha) )
+        switchMap( paisAlpha => this.paisesService.getPaisPorCodigo(paisAlpha) ),
+
+        switchMap( pais => this.paisesService.getPaisesPorCodigos( pais?.borders! ))
       )
 
-      .subscribe( pais => { 
-        this.fronteras = pais?.borders || [];
+      .subscribe( paises => { 
+        this.fronteras = paises;
+        this.cargando = false;
       })
 
   }
 
   guardar() {
+    console.log(this.miFormulario.value)
   }
 
 }
